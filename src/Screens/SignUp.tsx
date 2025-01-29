@@ -32,7 +32,6 @@ const handleSignUp = async (userData: PropsInfo) => {
     if (response.status === 201) {
       Alert.alert("Cadastro concluído");
     } else {
-      console.error("Resposta inesperada:", response);
       Toast.show({
         type: "error",
         text1: "Erro",
@@ -40,8 +39,6 @@ const handleSignUp = async (userData: PropsInfo) => {
       });
     }
   } catch (error: any) {
-    console.error("Erro na requisição:", error);
-
     if (error.response) {
       console.error("Resposta do erro:", error.response);
       Toast.show({
@@ -50,14 +47,12 @@ const handleSignUp = async (userData: PropsInfo) => {
         text2: error.response.data.message || "Erro ao cadastrar.",
       });
     } else if (error.request) {
-      console.error("Erro na requisição:", error.request);
       Toast.show({
         type: "error",
         text1: "Erro",
         text2: "A requisição não foi respondida.",
       });
     } else {
-      console.error("Erro desconhecido:", error.message);
       Toast.show({
         type: "error",
         text1: "Erro",

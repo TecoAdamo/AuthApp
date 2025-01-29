@@ -31,35 +31,24 @@ export default function Login() {
           },
         }
       );
-
-      console.log("Resposta do servidor:", response); // Imprime toda a resposta
-      console.log("Dados da resposta:", response.data); // Dados específicos da resposta
-
       if (response.status === 200) {
-        // Se o login for bem-sucedido, mostre o alerta
         Alert.alert("Bem-vindo", `Olá, ${response.data.name}!`);
       } else {
-        // Se não for bem-sucedido, mostra o alerta de erro
         Alert.alert("Erro", "Resposta inesperada do servidor.");
       }
     } catch (error: any) {
-      console.error("Erro na requisição:", error);
-
       if (error.response) {
-        console.error("Resposta do erro:", error.response);
         Alert.alert(
           "Erro",
           error.response.data.message || "Erro ao fazer login."
         );
       } else if (error.request) {
-        console.error("Erro na requisição:", error.request);
         Alert.alert("Erro", "A requisição não foi respondida.");
       } else {
-        console.error("Erro desconhecido:", error.message);
         Alert.alert("Erro", "Não foi possível conectar ao servidor.");
       }
     } finally {
-      setLoading(false); // Certifique-se de desabilitar o loading
+      setLoading(false);
     }
   };
 
