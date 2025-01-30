@@ -3,13 +3,20 @@ import { StyleSheet, View, Alert } from "react-native";
 import InputEmail from "../components/EmailInput";
 import InputPassword from "../components/PasswordInput";
 import ButtonAdvanced from "../components/button";
-import { useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
+import { AuthNavigatorRoutesProps } from "../routes/AuthRoutes";
+
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 export default function Login() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+
+  const navigation = useNavigation<AuthNavigatorRoutesProps>();
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -19,11 +26,9 @@ export default function Login() {
 
     setLoading(true);
 
-    console.log("Enviando dados para login:", { email, password });
-
     try {
       const response = await axios.post(
-        "http://192.168.0.107:3000/login",
+        "http://192.168.0.105:3000/login",
         { email, password },
         {
           headers: {
@@ -32,7 +37,12 @@ export default function Login() {
         }
       );
       if (response.status === 200) {
-        Alert.alert("Bem-vindo", `Olá, ${response.data.name}!`);
+        const userName = response.data.name;
+        await AsyncStorage.setItem("userName", userName);
+        await AsyncStorage.setItem("isLoggedIn", "true");
+        navigation.navigate("home");
+        setEmail("");
+        setPassword("");
       } else {
         Alert.alert("Erro", "Resposta inesperada do servidor.");
       }
@@ -54,10 +64,19 @@ export default function Login() {
 
   return (
     <View style={styles.container}>
+      <Ionicons
+        name="arrow-back"
+        size={32}
+        color="white"
+        style={styles.icon}
+        onPress={() => navigation.navigate("signUp")}
+      />
       <View style={styles.containerInputs}>
         <InputEmail value={email} onChangeText={setEmail} />
         <InputPassword value={password} onChangeText={setPassword} />
-        <ButtonAdvanced tittle="L O G I N" onPress={handleLogin} />
+        <View style={styles.containerBtn}>
+          <ButtonAdvanced tittle="L O G I N" onPress={handleLogin} />
+        </View>
       </View>
       <StatusBar style="auto" />
     </View>
@@ -72,6 +91,16 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   containerInputs: {
-    marginTop: "70%",
+    marginTop: "50%",
+  },
+  containerBtn: {
+    marginBottom: 18,
+    marginTop: "50%",
+  },
+  icon: {
+    position: "absolute", // Faz com que o ícone fique fixo na parte superior
+    top: 20, // Alinha o ícone 20 unidades abaixo da parte superior
+    left: 20, // Alinha o ícone 20 unidades da borda esquerda
+    marginTop: 30,
   },
 });
