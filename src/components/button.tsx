@@ -39,7 +39,6 @@ const styles = StyleSheet.create({
     height: 60,
     width: 300,
     padding: 16,
-    marginTop: "50%",
   },
   textBtn: {
     textAlign: "center",
